@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/client';
 import Modal from '../../components/Modal';
+import FigureSequenceQuestion from '../../components/FigureSequenceQuestion';
 import { 
   Clock, 
   Bookmark, 
@@ -18,7 +19,9 @@ import {
   Minimize2,
   FileText,
   CheckSquare,
-  Square
+  Square,
+  Layers,
+  Info
 } from 'lucide-react';
 
 export default function TestTaking() {
@@ -352,6 +355,15 @@ export default function TestTaking() {
   });
 
   const qType = currentQ?.questionType || 'single';
+  let figureData = null;
+  if (currentQ?.passageSnippet) {
+    try {
+      const parsedPassage = JSON.parse(currentQ.passageSnippet);
+      if (parsedPassage?.type === 'figure_sequence') figureData = parsedPassage;
+    } catch {
+      figureData = null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex flex-col transition-colors select-none">
@@ -410,10 +422,63 @@ export default function TestTaking() {
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
         {/* Left / Center: Question Panel */}
         <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col justify-between">
-          <div className="space-y-6">
+          <div className="space-y-5">
+            {/* Section tabs if test has multiple sections */}
+            {test.sections && test.sections.length > 0 && (
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-100 dark:border-slate-800 scrollbar-none">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1 shrink-0">
+                  <Layers className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Sections:</span>
+                </span>
+                {test.sections.map((sec, sIdx) => {
+                  const isCurrentSection = (currentQ?.section || '') === sec.name;
+                  const firstQIdx = questions.findIndex(q => (q.section || '') === sec.name);
+                  return (
+                    <button
+                      key={sIdx}
+                      type="button"
+                      onClick={() => {
+                        if (firstQIdx !== -1) setCurrentIndex(firstQIdx);
+                      }}
+                      className={`px-3 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center gap-1.5 ${
+                        isCurrentSection
+                          ? 'bg-indigo-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
+                      }`}
+                    >
+                      <span>{sec.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Section Description banner if candidate question is in a section with a description */}
+            {(() => {
+              const secObj = test.sections?.find(s => s.name === currentQ?.section);
+              if (!secObj || !secObj.description) return null;
+              return (
+                <div className="p-3 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 text-[11px] text-slate-600 dark:text-slate-300 flex items-start gap-2">
+                  <Info className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold text-indigo-900 dark:text-indigo-200 mr-1.5">
+                      {secObj.name} Instructions:
+                    </span>
+                    <span>{secObj.description}</span>
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Subject and Topic badge */}
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2 flex-wrap">
+                {currentQ?.section && (
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 flex items-center gap-1">
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>{currentQ.section}</span>
+                  </span>
+                )}
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                   {currentQ?.subject || 'General'} • {currentQ?.topic || 'Mock Problem'}
                 </span>
@@ -436,7 +501,7 @@ export default function TestTaking() {
             </div>
 
             {/* Passage / Paragraph Snippet block if present */}
-            {currentQ?.passageSnippet && (
+            {currentQ?.passageSnippet && !figureData && (
               <div className="rounded-2xl bg-indigo-50/40 dark:bg-slate-800/60 border border-indigo-100 dark:border-slate-700 p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                 <div className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                   <FileText className="w-4 h-4" />
@@ -455,6 +520,14 @@ export default function TestTaking() {
               </span>
               {currentQ?.text}
             </div>
+
+            {figureData && (
+              <FigureSequenceQuestion
+                figureData={figureData}
+                selectedOptionIndex={currentAnswer.selectedOption}
+                onOptionSelect={handleSelectOption}
+              />
+            )}
 
             {/* Code Snippet block if present */}
             {currentQ?.codeSnippet && (
@@ -582,9 +655,9 @@ export default function TestTaking() {
           </div>
         </div>
 
-        {/* Right: Question Palette Sidebar */}
-        <div className="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xs flex flex-col justify-between">
-          <div className="space-y-5">
+        {/* Right: Question Palette Sidebar — responsive */}
+        <div className="w-full lg:w-80 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-6 space-y-4">
             <h3 className="text-sm font-bold text-slate-900 dark:text-white">
               Question Palette
             </h3>
@@ -609,8 +682,8 @@ export default function TestTaking() {
               </div>
             </div>
 
-            {/* Grid of Numbered Badges */}
-            <div className="grid grid-cols-5 gap-2.5 max-h-72 overflow-y-auto p-1">
+            {/* Grid of Numbered Badges — responsive grid */}
+            <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-2 max-h-40 sm:max-h-32 lg:max-h-72 overflow-y-auto p-1 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-700">
               {questions.map((q, idx) => {
                 const isAnswered = isCurrentAnswered(q._id);
                 const isMarked = answers[q._id]?.markedForReview;
@@ -630,7 +703,8 @@ export default function TestTaking() {
                   <button
                     key={q._id}
                     onClick={() => setCurrentIndex(idx)}
-                    className={`h-10 rounded-xl text-xs flex items-center justify-center transition ${colorClasses}`}
+                    title={`Go to Question ${idx + 1}`}
+                    className={`h-9 rounded-xl text-xs flex items-center justify-center transition ${colorClasses}`}
                   >
                     {idx + 1}
                   </button>
@@ -639,13 +713,13 @@ export default function TestTaking() {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div className="p-4 sm:p-6 pt-0 border-t border-slate-100 dark:border-slate-800 mt-2">
             <button
               onClick={() => setShowSubmitModal(true)}
               className="w-full py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-xs font-bold transition flex items-center justify-center gap-2"
             >
               <Send className="w-3.5 h-3.5" />
-              <span>Finalize & Submit Test</span>
+              <span>Finalize &amp; Submit Test</span>
             </button>
           </div>
         </div>

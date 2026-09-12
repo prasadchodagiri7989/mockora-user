@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/client';
+import FigureSequenceQuestion from '../../components/FigureSequenceQuestion';
 import { 
   Target, 
   CheckCircle2, 
@@ -159,6 +160,15 @@ export default function Practice() {
   };
 
   const currentQ = questions[currentIndex];
+  let figureData = null;
+  if (currentQ?.passageSnippet) {
+    try {
+      const parsedPassage = JSON.parse(currentQ.passageSnippet);
+      if (parsedPassage?.type === 'figure_sequence') figureData = parsedPassage;
+    } catch {
+      figureData = null;
+    }
+  }
 
   // Evaluate Single MCQ
   const handleSelectOption = (index) => {
@@ -516,7 +526,7 @@ export default function Practice() {
               </div>
 
               {/* Passage snippet if present */}
-              {currentQ.passageSnippet && (
+              {currentQ.passageSnippet && !figureData && (
                 <div className="rounded-2xl bg-indigo-50/40 dark:bg-slate-800/60 border border-indigo-100 dark:border-slate-700 p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                   <div className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400 mb-2">
                     <FileText className="w-4 h-4" />
@@ -532,6 +542,14 @@ export default function Practice() {
               <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 leading-relaxed">
                 {currentQ.text}
               </h2>
+
+              {figureData && (
+                <FigureSequenceQuestion
+                  figureData={figureData}
+                  selectedOptionIndex={selectedOption}
+                  onOptionSelect={handleSelectOption}
+                />
+              )}
 
               {/* Code snippet if present */}
               {currentQ.codeSnippet && (

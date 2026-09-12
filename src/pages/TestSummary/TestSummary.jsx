@@ -20,6 +20,7 @@ import {
   ChevronUp
 } from 'lucide-react';
 
+
 export default function TestSummary() {
   const { attemptId } = useParams();
   const [attempt, setAttempt] = useState(null);
@@ -193,11 +194,18 @@ export default function TestSummary() {
               </div>
               <div>
                 <h3 className="text-lg font-extrabold tracking-tight text-white">
-                  AI Performance Review & Study Plan
+                  AI Performance Review &amp; Study Plan
                 </h3>
-                <p className="text-xs text-indigo-200">
-                  Automated concept deficiency diagnostics & personalized study roadmap
-                </p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <p className="text-xs text-indigo-200">
+                    Automated concept deficiency diagnostics &amp; personalized study roadmap
+                  </p>
+                  {aiReview?.aiProvider === 'gemini' && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-400/20 border border-indigo-400/40 text-indigo-300">
+                      ✨ Gemini AI
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -257,6 +265,35 @@ export default function TestSummary() {
               </ul>
             </div>
           </div>
+
+          {/* Preparation Concepts (Gemini-only) */}
+          {aiReview?.preparationConcepts?.length > 0 && (
+            <div className="bg-black/20 rounded-2xl p-5 border border-white/10 space-y-3">
+              <div className="flex items-center gap-2 text-violet-300 text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-4 h-4" />
+                <span>Key Concepts to Master</span>
+              </div>
+              <ul className="space-y-2 text-xs text-slate-200">
+                {aiReview.preparationConcepts.map((c, idx) => (
+                  <li key={idx} className="flex items-start gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-1.5 shrink-0" />
+                    <span>{c}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Time Management Tip (Gemini-only) */}
+          {aiReview?.timeManagementTip && (
+            <div className="bg-amber-900/20 rounded-2xl p-4 border border-amber-500/20 flex items-start gap-3">
+              <Clock className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-xs font-bold text-amber-300 mb-1">⏱ Time Management Insight</p>
+                <p className="text-xs text-amber-100 leading-relaxed">{aiReview.timeManagementTip}</p>
+              </div>
+            </div>
+          )}
 
           {/* Recommended Resources */}
           {aiReview.recommendedResources?.length > 0 && (
