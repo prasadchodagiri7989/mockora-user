@@ -276,7 +276,7 @@ export default function Resources() {
                 {activeResource.fileUrl ? (
                   <div className="h-[500px] w-full border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
                     <iframe
-                      src={activeResource.fileUrl.startsWith('http') ? activeResource.fileUrl : `http://localhost:5000${activeResource.fileUrl}`}
+                      src={activeResource.fileUrl.startsWith('http') ? activeResource.fileUrl : `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000').replace(/\/$/, '')}${activeResource.fileUrl}`}
                       className="w-full h-full"
                       title={activeResource.title}
                     />
@@ -296,7 +296,7 @@ export default function Resources() {
 
               {activeResource.fileUrl && (
                 <a
-                  href={activeResource.fileUrl.startsWith('http') ? activeResource.fileUrl : `http://localhost:5000${activeResource.fileUrl}`}
+                  href={activeResource.fileUrl.startsWith('http') ? activeResource.fileUrl : `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000').replace(/\/$/, '')}${activeResource.fileUrl}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   download
