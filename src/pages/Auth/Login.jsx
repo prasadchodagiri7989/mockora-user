@@ -32,12 +32,9 @@ export default function Login() {
       <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 mb-3">
-            <Sparkles className="w-6 h-6" />
-          </div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Mock<span className="text-indigo-600 dark:text-indigo-400">Ora</span>
-          </h1>
+          <Link to="/" className="inline-block mb-3">
+            <img src="/mockora-logo.png" alt="MockOra" className="h-11 w-auto mx-auto object-contain" />
+          </Link>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Sign in to access your mock tests, practice sets, and AI reviews.
           </p>

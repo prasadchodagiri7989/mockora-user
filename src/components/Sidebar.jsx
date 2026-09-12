@@ -40,17 +40,7 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Brand Header */}
         <div className="h-16 px-6 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-indigo-500/30">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Mock<span className="text-indigo-600 dark:text-indigo-400">Ora</span>
-              </span>
-              <span className="block text-[10px] font-semibold text-slate-400 -mt-1 tracking-wider uppercase">
-                Exam Platform
-              </span>
-            </div>
+            <img src="/mockora-logo.png" alt="MockOra" className="h-8 w-auto object-contain" />
           </Link>
 
           <button

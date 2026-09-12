@@ -42,11 +42,11 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-slate-50 dark:bg-slate-950 transition-colors">
       <div className="w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/30 mb-3">
-            <Sparkles className="w-6 h-6" />
-          </div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Join Universal<span className="text-indigo-600 dark:text-indigo-400">Mock</span>
+          <Link to="/" className="inline-block mb-3">
+            <img src="/mockora-logo.png" alt="MockOra" className="h-11 w-auto mx-auto object-contain" />
+          </Link>
+          <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            Create Candidate Account
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Start taking full-length timed mock tests with AI diagnostics.
