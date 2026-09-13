@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Sparkles, Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
+import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function Login() {
-  const [email, setEmail] = useState('student@universalmock.com');
-  const [password, setPassword] = useState('Student@123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -46,17 +46,6 @@ export default function Login() {
             <span>{error}</span>
           </div>
         )}
-
-        {/* Demo Credentials Quick-Fill Banner */}
-        <div className="mb-6 p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 text-xs">
-          <p className="font-semibold text-indigo-900 dark:text-indigo-200 mb-1">
-            Demo Credentials Pre-filled:
-          </p>
-          <div className="text-slate-600 dark:text-slate-300 space-y-0.5 font-mono text-[11px]">
-            <p>Email: <span className="text-indigo-600 dark:text-indigo-400">student@universalmock.com</span></p>
-            <p>Pass: <span className="text-indigo-600 dark:text-indigo-400">Student@123</span></p>
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -108,13 +97,6 @@ export default function Login() {
             )}
           </button>
         </form>
-
-        <p className="mt-8 text-center text-xs text-slate-500 dark:text-slate-400">
-          Don't have an account yet?{' '}
-          <Link to="/register" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-            Create Free Account
-          </Link>
-        </p>
       </div>
     </div>
   );
