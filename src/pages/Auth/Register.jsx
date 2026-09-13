@@ -4,12 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import { Sparkles, Lock, Mail, User, ArrowRight, AlertCircle } from 'lucide-react';
 
 const examCategories = [
+  'dMAT for Germany',
   'Computer Science & GATE',
   'Medical & MBBS',
   'IIT-JEE (Advanced & Mains)',
   'NEET UG',
   'IELTS Academic',
-  'D-MAT / MBA Aptitude',
 ];
 
 export default function Register() {
